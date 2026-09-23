@@ -96,6 +96,12 @@ export default async function ContentDetail({ params, searchParams }: { params: 
           </div>
         </div>
         <div className="row">
+          {!retired && ["IDEA", "RESEARCH", "SCRIPT", "QA"].includes(item.stage) ? (
+            <ActionForm op="run" hidden={{ jobType: "AUTOPILOT_PREPARE", contentId: id }} className="row">
+              <Submit variant="p">Prepare with AI</Submit>
+              <Gate reasons={pre("AUTOPILOT_PREPARE")} />
+            </ActionForm>
+          ) : null}
           <a className="btn" href={`/api/content/${id}/export`}>Export</a>
           {retired ? (
             <ActionForm op="content_restore" hidden={{ id }}><Submit>Restore</Submit></ActionForm>

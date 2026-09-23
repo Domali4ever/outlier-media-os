@@ -91,6 +91,7 @@ export const CAP = {
   PUBLISH: "publish.primary",
   ANALYTICS: "analytics.primary",
   AFFILIATE_REPORTING: "affiliate.reporting",
+  COMMERCE: "commerce.primary",
   MEDIA: "media.voice_video",
 } as const;
 export type Capability = (typeof CAP)[keyof typeof CAP];

@@ -7,6 +7,7 @@ import { testBrave } from "./brave";
 import { testDrive, testGa4 } from "./google";
 import { ProviderError } from "./http";
 import { testWordPress } from "./wordpress";
+import { testWhop } from "./whop";
 
 type TestFn = () => Promise<{ ok: true; detail: string; capabilities: string[] }>;
 
@@ -16,6 +17,7 @@ const TESTS: Record<string, TestFn> = {
   [CAP.DRIVE]: testDrive,
   [CAP.PUBLISH]: testWordPress,
   [CAP.ANALYTICS]: testGa4,
+  [CAP.COMMERCE]: testWhop,
 };
 
 /**

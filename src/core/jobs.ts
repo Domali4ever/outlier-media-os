@@ -21,6 +21,7 @@ export interface JobTypeDef {
 }
 
 export const JOB_TYPES: Record<string, JobTypeDef> = {
+  AUTOPILOT_PREPARE: { type: "AUTOPILOT_PREPARE", label: "Prepare with AI", level: 1, caps: [CAP.AI, CAP.RESEARCH], paid: true, sideEffect: false, needsActiveBrand: true, maxAttempts: 3 },
   RESEARCH: { type: "RESEARCH", label: "Generate research", level: 1, caps: [CAP.AI, CAP.RESEARCH], paid: true, sideEffect: false, needsActiveBrand: true, maxAttempts: 3 },
   SCRIPT: { type: "SCRIPT", label: "Generate script", level: 1, caps: [CAP.AI], paid: true, sideEffect: false, needsActiveBrand: true, maxAttempts: 3 },
   REVISE: { type: "REVISE", label: "Fix with AI", level: 1, caps: [CAP.AI], paid: true, sideEffect: false, needsActiveBrand: true, maxAttempts: 3 },

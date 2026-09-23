@@ -9,6 +9,7 @@ import { AppError, redact } from "@/core/util";
 import { JobContext, LeaseLost } from "./context";
 import { runAnalyticsSync, runDriveImport, runMcpCall, runMcpDiscover, runRecommend } from "./data";
 import { runFindOffers } from "./offers";
+import { runAutopilotPrepare } from "./autopilot";
 import { runPublish } from "./publish";
 import { runResearch } from "./research";
 import { runEditorialQa, runRevise, runScript } from "./writing";
@@ -16,6 +17,7 @@ import { runEditorialQa, runRevise, runScript } from "./writing";
 type Handler = (ctx: JobContext) => Promise<unknown>;
 
 export const HANDLERS: Record<string, Handler> = {
+  AUTOPILOT_PREPARE: runAutopilotPrepare,
   RESEARCH: runResearch,
   SCRIPT: runScript,
   REVISE: runRevise,

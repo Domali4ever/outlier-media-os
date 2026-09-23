@@ -17,6 +17,15 @@ function connectWordPress() {
 }
 
 describe("durable jobs", () => {
+  it("assisted autopilot is a level-1 preparation job and stays blocked by its dependencies", () => {
+    freshDb();
+    const { job } = createJob({ type: "AUTOPILOT_PREPARE", brandId: BRAND, contentId: "content_idea_001", actor: "operator" });
+    expect(job.permission_level).toBe(1);
+    expect(job.state).toBe("BLOCKED");
+    expect(JSON.parse(job.blocked_reason_json!).join(" ")).toMatch(/ai.structured_generation/);
+    expect(JSON.parse(job.blocked_reason_json!).join(" ")).toMatch(/research.retrieval/);
+  });
+
   it("disconnected work is BLOCKED with its exact dependencies, and released when they are met", () => {
     freshDb();
     const { job } = createJob({ type: "RESEARCH", brandId: BRAND, contentId: "content_idea_001", actor: "operator" });

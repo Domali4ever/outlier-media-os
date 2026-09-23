@@ -401,6 +401,109 @@ CREATE TABLE checkins (
 );
 `,
   },
+  {
+    version: 2,
+    name: "commerce_foundation",
+    sql: `
+ALTER TABLE offers ADD COLUMN offer_type TEXT NOT NULL DEFAULT 'AFFILIATE';
+ALTER TABLE offers ADD COLUMN price_minor INTEGER;
+ALTER TABLE offers ADD COLUMN price_currency TEXT;
+ALTER TABLE offers ADD COLUMN billing_interval TEXT;
+ALTER TABLE offers ADD COLUMN fulfillment_type TEXT NOT NULL DEFAULT 'AFFILIATE_LINK';
+ALTER TABLE offers ADD COLUMN commerce_provider TEXT;
+ALTER TABLE offers ADD COLUMN provider_product_id TEXT;
+ALTER TABLE offers ADD COLUMN provider_plan_id TEXT;
+ALTER TABLE offers ADD COLUMN provider_purchase_url TEXT;
+
+CREATE TABLE customers (
+  id TEXT PRIMARY KEY,
+  email TEXT,
+  display_name TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE customer_identities (
+  id TEXT PRIMARY KEY,
+  customer_id TEXT NOT NULL REFERENCES customers(id),
+  provider TEXT NOT NULL,
+  provider_user_id TEXT NOT NULL,
+  provider_member_id TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (provider, provider_user_id)
+);
+CREATE INDEX idx_customer_identities_customer ON customer_identities(customer_id);
+
+CREATE TABLE orders (
+  id TEXT PRIMARY KEY,
+  brand_id TEXT NOT NULL REFERENCES brands(id),
+  offer_id TEXT NOT NULL REFERENCES offers(id),
+  customer_id TEXT REFERENCES customers(id),
+  content_id TEXT REFERENCES content_items(id),
+  campaign_id TEXT,
+  channel TEXT,
+  status TEXT NOT NULL CHECK (status IN ('PENDING','PAID','FAILED','REFUNDED','PARTIALLY_REFUNDED','DISPUTED','CANCELLED')),
+  amount_minor INTEGER NOT NULL,
+  currency TEXT NOT NULL,
+  commerce_provider TEXT NOT NULL,
+  provider_checkout_id TEXT,
+  provider_payment_id TEXT,
+  checkout_url TEXT,
+  created_at TEXT NOT NULL,
+  paid_at TEXT,
+  refunded_at TEXT,
+  updated_at TEXT NOT NULL
+);
+CREATE INDEX idx_orders_content ON orders(content_id, created_at);
+CREATE INDEX idx_orders_provider_payment ON orders(commerce_provider, provider_payment_id);
+
+CREATE TABLE subscriptions (
+  id TEXT PRIMARY KEY,
+  customer_id TEXT NOT NULL REFERENCES customers(id),
+  offer_id TEXT NOT NULL REFERENCES offers(id),
+  provider TEXT NOT NULL,
+  provider_membership_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('ACTIVE','PAST_DUE','CANCELLING','CANCELLED','EXPIRED')),
+  cancel_at_period_end INTEGER NOT NULL DEFAULT 0,
+  current_period_start TEXT,
+  current_period_end TEXT,
+  started_at TEXT NOT NULL,
+  ended_at TEXT,
+  updated_at TEXT NOT NULL,
+  UNIQUE (provider, provider_membership_id)
+);
+
+CREATE TABLE revenue_events (
+  id TEXT PRIMARY KEY,
+  order_id TEXT NOT NULL REFERENCES orders(id),
+  customer_id TEXT REFERENCES customers(id),
+  offer_id TEXT NOT NULL REFERENCES offers(id),
+  provider TEXT NOT NULL,
+  provider_event_id TEXT NOT NULL,
+  event_type TEXT NOT NULL CHECK (event_type IN ('SALE','REFUND','FEE','ADJUSTMENT')),
+  gross_minor INTEGER NOT NULL,
+  fee_minor INTEGER,
+  net_minor INTEGER,
+  currency TEXT NOT NULL,
+  occurred_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  UNIQUE (provider, provider_event_id)
+);
+
+CREATE TABLE webhook_events (
+  provider_event_id TEXT PRIMARY KEY,
+  provider TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  payload_json TEXT NOT NULL,
+  received_at TEXT NOT NULL,
+  processed_at TEXT,
+  processing_status TEXT NOT NULL CHECK (processing_status IN ('RECEIVED','PROCESSED','IGNORED','FAILED')),
+  error_message TEXT
+);
+CREATE INDEX idx_webhook_events_status ON webhook_events(processing_status, received_at);
+`,
+  },
 ];
 
 export const SCHEMA_VERSION = MIGRATIONS[MIGRATIONS.length - 1].version;
