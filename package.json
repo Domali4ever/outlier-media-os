@@ -1,0 +1,42 @@
+{
+  "name": "outlier-media-os",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Outlier Media OS — local-first operating console for evidence-based affiliate content (initial brand: CPAP Ownership + Travel).",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20.9 <27"
+  },
+  "scripts": {
+    "setup": "npm install && npm run migrate && npm run build",
+    "migrate": "tsx scripts/migrate.ts",
+    "build": "next build",
+    "start": "node scripts/run.mjs start",
+    "dev": "node scripts/run.mjs dev",
+    "worker": "tsx worker/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "backup": "tsx scripts/backup.ts",
+    "restore": "tsx scripts/restore.ts",
+    "export": "tsx scripts/export.ts",
+    "import": "tsx scripts/import.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "better-sqlite3": "^12.11.1",
+    "next": "^16.3.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
+  }
+}
