@@ -105,5 +105,6 @@ This is a single-operator, local-first app. To put it on a network:
 - `docs/CONNECTIONS.md`: connection checklist and integration matrix
 - `docs/ACCEPTANCE.md`: acceptance report (passed, failed, unverified)
 - `docs/ASSUMPTIONS.md`: assumptions, source-of-truth notes, open gaps
+- `docs/COMMERCE.md`: provider-neutral commerce model and Whop rollout boundary
 - `docs/LICENSES.md`: dependency licences
 - `prompts/`: every AI prompt used by the app
